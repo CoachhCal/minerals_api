@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import session from 'express-session';
 import usersRouter from './routes/users.js';
-import productRouter from './routes/home.js';
+import productRouter from './routes/products.js';
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -32,8 +32,8 @@ app.use(session({
 }));
 
 // routes
-app.use('/api/', productRouter);
-app.use('/api/users', usersRouter);
+app.use('/products', productRouter);
+app.use('/users', usersRouter);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
