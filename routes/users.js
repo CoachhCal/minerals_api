@@ -1,6 +1,7 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import { hashPassword, comparePassword } from '../lib/utility.js';
+import PasswordValidator from 'password-validator';
 
 const router = express.Router();
 
@@ -26,14 +27,27 @@ router.post('/signup', async (req,res) => {
     return res.status(400).send('User already exists');
   }
 
+  let validatorSchema = new PasswordValidator();
+
+  validatorSchema
+  .is().min(8)
+  .has().uppercase()
+  .has().lowercase()
+  .has().digits(1)
+
+  if(!validatorSchema.validate(password)){
+    return res.status(400).send('Invalid password');
+  }
+
+
   //hash password
   const hashedPassword = await hashPassword(password);
 
   //add user to database
   const user = await prisma.customer.create({
     data: {
-      firstName: firstName,
-      lastName: lastName,
+      first_name: first_name,
+      last_name: last_name,
       email: email,
       password: hashedPassword
     },
@@ -70,7 +84,11 @@ router.post('/login', async (req,res) => {
   }
 
   //setup user session
-  req.session.user = existingUser.email;
+  req.session.user = {
+    customer_id : existingUser.customer_id,
+    email : existingUser.email,
+    first_name : existingUser.first_name,
+    last_name : existingUser.last_name}
  
 
   //send response
@@ -83,7 +101,12 @@ router.post('/logout', (req,res) => {
 });
 
 router.get('/getsession', (req,res) => {
-  res.json({'user' : req.session.user});
+  if(req.session.user){
+    res.json({'user' : req.session.user});
+  }
+  else{
+    return res.status(401).send('Not logged in');
+  }
 });
 
 export default router;

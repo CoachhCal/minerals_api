@@ -22,6 +22,30 @@ model customer{
 customer_id    Int       @id @default(autoincrement())
 email          String    @unique
 password       String
-first_name     Float
+first_name     String
 last_name      String
+}
+
+model Purchase{
+  purchase_id   Int     @id @default(autoincrement())
+  customer_id   Int
+  street        String
+  city          String
+  province      String
+  country       String
+  postal_code   String
+  credit_card   String
+  credit_expire String
+  credit_cvv    String
+  invoice_amt   Float
+  invoice_tax   Float
+  invoice_total Float
+  order_date    DateTime  @default(now())
+}
+
+model PurchaseItem {
+  purchase_id Int
+  product_id  Int 
+  quantity    Int
+  @@id([purchase_id, product_id])
 }
