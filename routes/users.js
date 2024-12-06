@@ -14,7 +14,7 @@ router.post('/signup', async (req,res) => {
 
   //validate the inputs
   if(!email || !password || !first_name || !last_name) {
-    return res.status(400).send('Missing required fields');
+    return res.status(400).json('Missing required fields');
   }
  
   //check if user already 
@@ -24,7 +24,7 @@ router.post('/signup', async (req,res) => {
     }
   });
   if (existingUser) {
-    return res.status(400).send('User already exists');
+    return res.status(400).json('User already exists');
   }
 
   let validatorSchema = new PasswordValidator();
@@ -36,7 +36,7 @@ router.post('/signup', async (req,res) => {
   .has().digits(1)
 
   if(!validatorSchema.validate(password)){
-    return res.status(400).send('Invalid password');
+    return res.status(400).json('Invalid password');
   }
 
 

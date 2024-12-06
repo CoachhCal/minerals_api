@@ -38,11 +38,12 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/purchase', async (req,res) => {
+    console.log(req.session)
     if(!req.session.user){
         return res.status(401).send('Not logged in');
     }
 
-    const {street, city, province, country, postal_code, credit_card, credit_expire, credit_cvv, cart, invoice_amt, invoice_tax, invoice_total} = req.body;
+    const {street, city, province, country, postal_code, credit_card, credit_expire, credit_cvv, cart} = req.body;
 
     const purchase = await prisma.purchase.create({
         data: {
@@ -55,9 +56,9 @@ router.post('/purchase', async (req,res) => {
             credit_card: credit_card,
             credit_expire: credit_expire,
             credit_cvv: credit_cvv,
-            invoice_amt: parseFloat(invoice_amt),
-            invoice_tax: parseFloat(invoice_tax),
-            invoice_total: parseFloat(invoice_total)
+            // invoice_amt: parseFloat(invoice_amt),
+            // invoice_tax: parseFloat(invoice_tax),
+            // invoice_total: parseFloat(invoice_total)
         }
     })
 
